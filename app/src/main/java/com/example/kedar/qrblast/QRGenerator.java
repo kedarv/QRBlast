@@ -89,10 +89,14 @@ public class QRGenerator extends Activity {
         @Override
         protected String doInBackground(ArrayList<String>... params) {
             ArrayList<String> splitted = params[0];
+            int size = splitted.size();
+            int counter = 1;
+            String appended = "";
             for (String str : splitted) {
                 QRCodeWriter writer = new QRCodeWriter();
                 try {
-                    BitMatrix bitMatrix = writer.encode(str, BarcodeFormat.QR_CODE, 512, 512);
+                    appended = counter + "|" + size + "|" + str;
+                    BitMatrix bitMatrix = writer.encode(appended, BarcodeFormat.QR_CODE, 512, 512);
                     int width = bitMatrix.getWidth();
                     int height = bitMatrix.getHeight();
                     final Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
