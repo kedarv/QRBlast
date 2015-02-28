@@ -1,6 +1,7 @@
 package com.example.kedar.qrblast;
 
 import android.app.Activity;
+import android.util.Base64;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -12,6 +13,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.util.Base64;
+import android.widget.TextView;
+
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -62,15 +65,50 @@ public class MainActivity extends Activity {
             int pos1 = scanned.indexOf("|");
             int pos2 = scanned.indexOf("|",pos1+1);
             int h1 = Integer.parseInt(scanned.substring(0,pos1));
-            int h2 = Integer.parseInt(scanned.substring(pos1+1,pos2));
+            int pageCount = Integer.parseInt(scanned.substring(pos1+1,pos2));
             String data = scanned.substring(pos2+1);
             System.out.println(h1);
-            System.out.println(h2);
+            System.out.println(pageCount);
             System.out.println(data);
 
 
             map.put(h1,data);
-            System.out.println(map.get(h1));
+            //System.out.println(map.get(h1));
+
+            System.out.println(map.get(42));
+            for (Map.Entry<Integer, String> entry : map.entrySet()) {
+                System.out.println(entry.getKey()+" : "+entry.getValue());
+            }
+
+            boolean complete=true;
+            for(int x=1; x<=pageCount; x++) {
+                if(map.get(x) == (null))
+                    complete = false;
+            }
+            if(!complete)
+            {
+                IntentIntegrator integrator = new IntentIntegrator(this);
+                integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
+                integrator.setPrompt("Scan QR");
+                integrator.setResultDisplayDuration(0);
+                integrator.setScanningRectangle(500, 500);
+                integrator.setCameraId(0);  // Use a specific camera of the device
+                integrator.initiateScan();
+            }
+
+            else
+            {
+                System.out.println("complete!");
+                final TextView textViewToChange = (TextView) findViewById(R.id.textView2);
+
+                String outs = "";
+                for (Map.Entry<Integer, String> entry : map.entrySet()) {
+                    outs+=entry.getValue();
+                }
+
+
+                textViewToChange.setText("it's complete!"+outs);
+            }
 
 
 //            DBHelper helper;
