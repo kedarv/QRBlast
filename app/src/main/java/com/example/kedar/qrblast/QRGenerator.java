@@ -31,7 +31,7 @@ public class QRGenerator extends Activity {
     private static final int OPEN_DOCUMENT_REQUEST = 1;
     private void openDocument() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        intent.setType("image/*");
+        intent.setType("*/*");
         startActivityForResult(intent, OPEN_DOCUMENT_REQUEST);
     }
 
@@ -96,7 +96,7 @@ public class QRGenerator extends Activity {
                 QRCodeWriter writer = new QRCodeWriter();
                 try {
                     appended = counter + "|" + size + "|" + str;
-                    BitMatrix bitMatrix = writer.encode(appended, BarcodeFormat.QR_CODE, 512, 512);
+                    BitMatrix bitMatrix = writer.encode(appended, BarcodeFormat.QR_CODE, 768, 768);
                     int width = bitMatrix.getWidth();
                     int height = bitMatrix.getHeight();
                     final Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
