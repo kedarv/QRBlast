@@ -1,8 +1,10 @@
 package com.example.kedar.qrblast;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Base64;
@@ -16,44 +18,81 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 
 public class QRGenerator extends Activity {
+    private static final int OPEN_DOCUMENT_REQUEST = 1;
+    private void openDocument() {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.setType("image/*");
+        startActivityForResult(intent, OPEN_DOCUMENT_REQUEST);
+    }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == OPEN_DOCUMENT_REQUEST) {
+            if (resultCode != RESULT_OK)
+                return;
+
+            Uri uri = data.getData();
+            String base64 = "";
+            try {
+                String text = readTextFromUri(uri);
+                byte[] data64 = null;
+                    try {
+                        data64 = text.getBytes("UTF-8");
+                    } catch (UnsupportedEncodingException e1) {
+                        e1.printStackTrace();
+                    }
+                base64 = Base64.encodeToString(data64, Base64.DEFAULT);
+                Log.w("base64", base64);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            ArrayList<String> splitted = new ArrayList<String>();
+            int i = 0;
+            while (i < base64.length()) {
+                splitted.add(base64.substring(i, Math.min(i + 500,base64.length())));
+                i += 500;
+            }
+            new LongOperation().execute(splitted);
+        }
+    }
+    private String readTextFromUri(Uri uri) throws IOException {
+        InputStream inputStream = getContentResolver().openInputStream(uri);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(
+                inputStream));
+        StringBuilder stringBuilder = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            stringBuilder.append(line);
+        }
+        inputStream.close();
+        reader.close();
+        return stringBuilder.toString();
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qrgenerator);// String to be encoded with Base64
-        String text = "MTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEw";
-        ArrayList<String> splitted = new ArrayList<String>();
-        int i = 0;
-        while (i < text.length()) {
-            splitted.add(text.substring(i, Math.min(i + 500,text.length())));
-            i += 500;
-        }
-        new LongOperation().execute(splitted);
+        openDocument();
     }
 
     private class LongOperation extends AsyncTask <ArrayList<String>, Void, String> {
-
         @Override
         protected String doInBackground(ArrayList<String>... params) {
             ArrayList<String> splitted = params[0];
             for (String str : splitted) {
-                byte[] data = null;
-                try {
-                    data = str.getBytes("UTF-8");
-                } catch (UnsupportedEncodingException e1) {
-                    e1.printStackTrace();
-                }
-                String base64 = Base64.encodeToString(data, Base64.DEFAULT);
-                Log.w("base64", base64);
                 QRCodeWriter writer = new QRCodeWriter();
                 try {
-                    BitMatrix bitMatrix = writer.encode(base64, BarcodeFormat.QR_CODE, 512, 512);
+                    BitMatrix bitMatrix = writer.encode(str, BarcodeFormat.QR_CODE, 512, 512);
                     int width = bitMatrix.getWidth();
                     int height = bitMatrix.getHeight();
                     final Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
