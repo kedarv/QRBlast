@@ -54,6 +54,7 @@ public class QRGenerator extends Activity {
                     }
                 }
                 ((ImageView) findViewById(R.id.qr_result)).setImageBitmap(bmp);
+                Log.w("info", "switched");
             } catch (Exception e) {
                 e.printStackTrace();
             }
