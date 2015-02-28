@@ -52,15 +52,15 @@ public class QRGenerator extends Activity {
                         e1.printStackTrace();
                     }
                 base64 = Base64.encodeToString(data64, Base64.DEFAULT);
-                Log.w("base64", base64);
+                //Log.w("base64", base64);
             } catch (IOException e) {
                 e.printStackTrace();
             }
             ArrayList<String> splitted = new ArrayList<String>();
             int i = 0;
             while (i < base64.length()) {
-                splitted.add(base64.substring(i, Math.min(i + 500,base64.length())));
-                i += 500;
+                splitted.add(base64.substring(i, Math.min(i + 900, base64.length())));
+                i += 900;
             }
             new LongOperation().execute(splitted);
         }
@@ -90,35 +90,36 @@ public class QRGenerator extends Activity {
         protected String doInBackground(ArrayList<String>... params) {
             ArrayList<String> splitted = params[0];
             int size = splitted.size();
-            int counter = 1;
             String appended = "";
-            for (String str : splitted) {
-                QRCodeWriter writer = new QRCodeWriter();
-                try {
-                    appended = counter + "|" + size + "|" + str;
-                    BitMatrix bitMatrix = writer.encode(appended, BarcodeFormat.QR_CODE, 768, 768);
-                    int width = bitMatrix.getWidth();
-                    int height = bitMatrix.getHeight();
-                    final Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
-                    for (int x = 0; x < width; x++) {
-                        for (int y = 0; y < height; y++) {
-                            bmp.setPixel(x, y, bitMatrix.get(x, y) ? Color.BLACK : Color.WHITE);
+            while(true) {
+                int counter = 1;
+                for (String str : splitted) {
+                    QRCodeWriter writer = new QRCodeWriter();
+                    try {
+                        appended = counter + "|" + size + "|" + str;
+                        Log.w("data", appended);
+                        BitMatrix bitMatrix = writer.encode(appended, BarcodeFormat.QR_CODE, 768, 768);
+                        int width = bitMatrix.getWidth();
+                        int height = bitMatrix.getHeight();
+                        final Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+                        for (int x = 0; x < width; x++) {
+                            for (int y = 0; y < height; y++) {
+                                bmp.setPixel(x, y, bitMatrix.get(x, y) ? Color.BLACK : Color.WHITE);
+                            }
                         }
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                ((ImageView) findViewById(R.id.qr_result)).setImageBitmap(bmp);
+                            }
+                        });
+                        counter++;
+                        Thread.sleep(1800);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            ((ImageView) findViewById(R.id.qr_result)).setImageBitmap(bmp);
-                        }
-                    });
-
-                    Log.w("info", "switched");
-                    Thread.sleep(1000);
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
             }
-            return "Executed";
         }
 
         @Override
