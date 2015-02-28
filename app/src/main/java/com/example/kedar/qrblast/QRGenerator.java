@@ -2,8 +2,12 @@ package com.example.kedar.qrblast;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Base64;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import java.io.UnsupportedEncodingException;
 
 
 public class QRGenerator extends Activity {
@@ -11,7 +15,16 @@ public class QRGenerator extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_qrgenerator);
+        setContentView(R.layout.activity_qrgenerator);// String to be encoded with Base64
+        String text = "Test";
+        byte[] data = null;
+        try {
+            data = text.getBytes("UTF-8");
+        } catch (UnsupportedEncodingException e1) {
+            e1.printStackTrace();
+        }
+        String base64 = Base64.encodeToString(data, Base64.DEFAULT);
+        Log.w("encoded", base64);
     }
 
 

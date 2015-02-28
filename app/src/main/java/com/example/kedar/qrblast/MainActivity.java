@@ -9,9 +9,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-
+import android.util.Base64;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+
+import java.io.UnsupportedEncodingException;
 
 
 public class MainActivity extends Activity {
@@ -21,7 +23,15 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Button bScan = (Button) findViewById(R.id.bScan);
+        Button bSend = (Button) findViewById(R.id.bSend);
         final IntentIntegrator integrator = new IntentIntegrator(this);
+        bSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent myIntent = new Intent(getBaseContext(), QRGenerator.class);
+                startActivity(myIntent);
+            }
+        });
         bScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
