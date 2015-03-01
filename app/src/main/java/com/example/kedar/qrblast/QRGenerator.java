@@ -19,6 +19,7 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -44,8 +45,9 @@ public class QRGenerator extends Activity {
             Uri uri = data.getData();
             String base64 = "";
             try {
-                String text = readTextFromUri(uri);
-                byte[] data64 = text.getBytes();
+               // String text = readTextFromUri(uri);
+                //Log.w("info", text);
+                byte[] data64 = getBytes(uri);
                 base64 = Base64.encodeToString(data64, Base64.DEFAULT);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -53,8 +55,8 @@ public class QRGenerator extends Activity {
             ArrayList<String> splitted = new ArrayList<String>();
             int i = 0;
             while (i < base64.length()) {
-                splitted.add(base64.substring(i, Math.min(i + 500, base64.length())));
-                i += 500;
+                splitted.add(base64.substring(i, Math.min(i + 650, base64.length())));
+                i += 650;
             }
             new LongOperation().execute(splitted);
         }
@@ -72,6 +74,19 @@ public class QRGenerator extends Activity {
         reader.close();
         return stringBuilder.toString();
     }
+    public byte[] getBytes(Uri uri) throws IOException {
+        InputStream inputStream = getContentResolver().openInputStream(uri);
+        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+        int bufferSize = 1024;
+        byte[] buffer = new byte[bufferSize];
+
+        int len = 0;
+        while ((len = inputStream.read(buffer)) != -1) {
+            byteBuffer.write(buffer, 0, len);
+        }
+        return byteBuffer.toByteArray();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
