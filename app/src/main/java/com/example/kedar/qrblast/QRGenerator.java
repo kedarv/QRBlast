@@ -45,22 +45,16 @@ public class QRGenerator extends Activity {
             String base64 = "";
             try {
                 String text = readTextFromUri(uri);
-                byte[] data64 = null;
-                    try {
-                        data64 = text.getBytes("UTF-8");
-                    } catch (UnsupportedEncodingException e1) {
-                        e1.printStackTrace();
-                    }
+                byte[] data64 = text.getBytes();
                 base64 = Base64.encodeToString(data64, Base64.DEFAULT);
-                //Log.w("base64", base64);
             } catch (IOException e) {
                 e.printStackTrace();
             }
             ArrayList<String> splitted = new ArrayList<String>();
             int i = 0;
             while (i < base64.length()) {
-                splitted.add(base64.substring(i, Math.min(i + 900, base64.length())));
-                i += 900;
+                splitted.add(base64.substring(i, Math.min(i + 500, base64.length())));
+                i += 500;
             }
             new LongOperation().execute(splitted);
         }
