@@ -112,6 +112,11 @@ public class MainActivity extends Activity {
                 textViewToChange.setText("it's complete!"+outs);
                 System.out.println(outs);
 
+                byte[] decoded = Base64.decode(outs, Base64.DEFAULT);
+                String text = new String(decoded);
+                System.out.println(text);
+                textViewToChange.setText(text);
+
             }
 
 
