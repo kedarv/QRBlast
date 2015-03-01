@@ -18,6 +18,8 @@ import android.widget.TextView;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
@@ -116,9 +118,9 @@ public class MainActivity extends Activity {
                 System.out.println(outs);
 
                 byte[] decoded = Base64.decode(outs, Base64.DEFAULT);
-                String text = new String(decoded);
-                System.out.println(text);
-                textViewToChange.setText(text);
+//                String text = new String(decoded);
+//                System.out.println(text);
+//                textViewToChange.setText(text);
 
             }
 
@@ -147,6 +149,19 @@ public class MainActivity extends Activity {
 //                Log.w("uid", "" +  cursor.getInt(cursor.getColumnIndex("uid")));
 //                counter++;
 //            }
+        }
+    }
+
+    public void writeToFile(byte[] array)
+    {
+        try
+        {
+            String path = "/data/data/lalallalaa.txt";
+            FileOutputStream stream = new FileOutputStream(path);
+            stream.write(array);
+        } catch (Exception e1)
+        {
+            e1.printStackTrace();
         }
     }
 
