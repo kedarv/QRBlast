@@ -91,7 +91,6 @@ public class MainActivity extends Activity {
                 IntentIntegrator integrator = new IntentIntegrator(this);
                 integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
                 integrator.setPrompt("Scan QR");
-                integrator.set
                 integrator.setResultDisplayDuration(0);
                 integrator.setScanningRectangle(1000, 1000);
                 integrator.setCameraId(0);  // Use a specific camera of the device
