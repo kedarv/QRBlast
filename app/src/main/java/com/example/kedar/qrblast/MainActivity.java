@@ -49,7 +49,7 @@ public class MainActivity extends Activity {
                 integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
                 integrator.setPrompt("Scan QR");
 //                integrator.setResultDisplayDuration(0);
-                integrator.setScanningRectangle(500, 500);
+                integrator.setScanningRectangle(1000, 1000);
                 integrator.setCameraId(0);  // Use a specific camera of the device
                 integrator.initiateScan();
             }
@@ -75,10 +75,11 @@ public class MainActivity extends Activity {
             map.put(h1,data);
             //System.out.println(map.get(h1));
 
-            System.out.println(map.get(42));
+            //System.out.println(map.get(42));
             for (Map.Entry<Integer, String> entry : map.entrySet()) {
                 System.out.println(entry.getKey()+" : "+entry.getValue());
             }
+            System.out.println("YO I JUST SCANNED #"+h1+"of");
 
             boolean complete=true;
             for(int x=1; x<=pageCount; x++) {
@@ -90,10 +91,12 @@ public class MainActivity extends Activity {
                 IntentIntegrator integrator = new IntentIntegrator(this);
                 integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
                 integrator.setPrompt("Scan QR");
+                integrator.set
                 integrator.setResultDisplayDuration(0);
-                integrator.setScanningRectangle(500, 500);
+                integrator.setScanningRectangle(1000, 1000);
                 integrator.setCameraId(0);  // Use a specific camera of the device
                 integrator.initiateScan();
+
             }
 
             else
@@ -108,6 +111,8 @@ public class MainActivity extends Activity {
 
 
                 textViewToChange.setText("it's complete!"+outs);
+                System.out.println(outs);
+
             }
 
 
