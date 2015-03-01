@@ -1,6 +1,8 @@
 package com.example.kedar.qrblast;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Base64;
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.util.Base64;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -103,7 +106,7 @@ public class MainActivity extends Activity {
             else
             {
                 System.out.println("complete!");
-                final TextView textViewToChange = (TextView) findViewById(R.id.textView2);
+                //final TextView textViewToChange = (TextView) findViewById(R.id.textView2);
 
                 String outs = "";
                 for(int x=1;x<=pageCount;x++){
@@ -114,10 +117,15 @@ public class MainActivity extends Activity {
 //                }
 
                 outs = outs.replace("\n", "").replace("\r", "").replace(" ", "");
-                textViewToChange.setText("it's complete!"+outs);
+                //textViewToChange.setText("it's complete!"+outs);
                 System.out.println(outs);
 
                 byte[] decoded = Base64.decode(outs, Base64.DEFAULT);
+
+
+                final ImageView imageView = (ImageView) findViewById(R.id.imageView);
+                Bitmap bitmap = BitmapFactory.decodeByteArray(decoded, 0, decoded.length);
+                imageView.setImageBitmap(bitmap);
 //                String text = new String(decoded);
 //                System.out.println(text);
 //                textViewToChange.setText(text);
