@@ -104,11 +104,14 @@ public class MainActivity extends Activity {
                 final TextView textViewToChange = (TextView) findViewById(R.id.textView2);
 
                 String outs = "";
-                for (Map.Entry<Integer, String> entry : map.entrySet()) {
-                    outs+=entry.getValue();
+                for(int x=1;x<=pageCount;x++){
+                    outs+=map.get(x);
                 }
+//                for (Map.Entry<Integer, String> entry : map.entrySet()) {
+//                    outs+=entry.getValue();
+//                }
 
-
+                outs = outs.replace("\n", "").replace("\r", "").replace(" ", "");
                 textViewToChange.setText("it's complete!"+outs);
                 System.out.println(outs);
 
